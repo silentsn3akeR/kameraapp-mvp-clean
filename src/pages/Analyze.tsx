@@ -7,7 +7,6 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
 
   useEffect(() => {
     if (!image) return;
-
     setIsAnalyzing(true);
 
     const timer = setTimeout(() => {
@@ -15,7 +14,7 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
       setResult(random);
       onScanComplete(random.score);
       setIsAnalyzing(false);
-    }, 1200);
+    }, 1800);
 
     return () => clearTimeout(timer);
   }, [image]);
@@ -23,17 +22,27 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
   if (!image) return null;
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="page analyzePage">
+      <div className="cameraFramePremium">
+        <img src={image} alt="Analyzed" />
+        {isAnalyzing && <div className="scanLine" />}
+      </div>
+
       {isAnalyzing ? (
-        <h2>Analyzing...</h2>
+        <div className="analysisLoading">Neural Processing...</div>
       ) : (
-        <>
-          <img src={image} style={{ width: "100%" }} />
+        <div className="analysisCardPremium">
+          <div className="scoreBlock">
+            <span>{result.score}</span>
+            <small>/100</small>
+          </div>
           <h2>{result.title}</h2>
-          <p>Score: {result.score}</p>
-          <p>{result.suggestion}</p>
-          <button onClick={onRetry}>Retry</button>
-        </>
+          <p className="analysisHint">{result.suggestion}</p>
+
+          <div className="commandBar">
+            <button className="pillButton darkButton" onClick={onRetry}>Retry</button>
+          </div>
+        </div>
       )}
     </div>
   );
