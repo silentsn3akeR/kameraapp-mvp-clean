@@ -17,8 +17,8 @@ const navItems: { id: Page; label: string; icon: string }[] = [
 ];
 
 export default function App() {
-  const [page, setPage] = useState<Page>("camera");
-  const [image, setImage] = useState<string | null>(null);
+  return <h1 style={{ color: "red" }}>ICH BIN DA</h1>;
+}
 
   const goToAnalyze = (img: string) => {
     setImage(img);
