@@ -1,61 +1,42 @@
-export default function Analyze({ image }: { image: string | null }) {
+export default function Analyze({ image, onRetry }: { image: string | null; onRetry: () => void; }) {
   if (!image) {
     return (
-      <div style={{ padding: 20 }}>
+      <div className="page">
         <h2>Analyse</h2>
         <p>Kein Bild ausgewählt.</p>
-        <p>Gehe zur Kamera und wähle ein Bild aus.</p>
+        <button className="primaryBtn" onClick={onRetry}>Zur Kamera</button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="page">
       <h2>Analyse</h2>
-      <p>Erste Einschätzung deines Bildes.</p>
+      <p className="sub">Erste Einschätzung deines Bildes.</p>
 
-      <img
-        src={image}
-        alt="Analyse"
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          borderRadius: 16,
-          marginTop: 12,
-        }}
-      />
+      <img src={image} alt="Analyse" className="previewImage" />
 
-      <div style={{ marginTop: 20 }}>
-        <h3>Ergebnis</h3>
+      <div className="cardGrid">
+        <div className="card">
+          <strong>Komposition</strong>
+          <p>Motiv erkannt. Prüfe die Platzierung.</p>
+        </div>
 
-        <div style={{ display: "grid", gap: 12 }}>
-          <div style={cardStyle}>
-            <strong>Komposition</strong>
-            <p>Motiv erkannt. Prüfe, ob es bewusst platziert ist.</p>
-          </div>
+        <div className="card">
+          <strong>Licht</strong>
+          <p>Achte auf Richtung und Kontrast.</p>
+        </div>
 
-          <div style={cardStyle}>
-            <strong>Licht</strong>
-            <p>Licht wirkt solide. Achte auf Richtung und harte Schatten.</p>
-          </div>
-
-          <div style={cardStyle}>
-            <strong>Verbesserung</strong>
-            <p>Teste eine zweite Aufnahme mit klarerer Bildidee.</p>
-          </div>
+        <div className="card">
+          <strong>Verbesserung</strong>
+          <p>Teste Perspektive oder Abstand.</p>
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-        <button>Nochmal versuchen</button>
-        <button>Post vorbereiten</button>
+      <div className="actionRow">
+        <button className="secondaryBtn" onClick={onRetry}>Nochmal versuchen</button>
+        <button className="primaryBtn">Post vorbereiten</button>
       </div>
     </div>
   );
 }
-
-const cardStyle: React.CSSProperties = {
-  padding: 14,
-  borderRadius: 12,
-  background: "#f2f2f2",
-};
