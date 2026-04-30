@@ -27,33 +27,23 @@ export default function App() {
       case "profile":
         return <Profile />;
       default:
-        return
-      {/* Bottom Navigation */}
+        return <Camera onAnalyze={goToAnalyze} />;
+    }
+  };
+
+  return (
+    <div style={{ paddingBottom: 80 }}>
+      {renderPage()}
+
       <div
         style={{
           position: "fixed",
           bottom: 0,
+          left: 0,
           width: "100%",
           display: "flex",
           justifyContent: "space-around",
           background: "#111",
-          color: "#fff",
-          padding: 10,
-        }}
-      >
-        <button onClick={() => setPage("camera")}>📷</button>
-        <button onClick={() => setPage("analyze")}>✨</button>
-        <button onClick={() => setPage("challenges")}>🏆</button>
-        <button onClick={() => setPage("community")}>👥</button>
-        <button onClick={() => setPage("profile")}>👤</button>
-      </div>
-    </div>
-  );
-}          width: "100%",
-          display: "flex",
-          justifyContent: "space-around",
-          background: "#111",
-          color: "#fff",
           padding: 10,
         }}
       >
