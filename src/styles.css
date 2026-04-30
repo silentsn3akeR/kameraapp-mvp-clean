@@ -1,23 +1,48 @@
-body { margin: 0; font-family: Arial, sans-serif; background: #0e0e11; color: #fff; }
+body { margin: 0; font-family: Arial, sans-serif; background: #07080d; color: #fff; }
+* { box-sizing: border-box; }
+button { cursor: pointer; font: inherit; }
 
-.appShell { min-height: 100vh; display: flex; flex-direction: column; }
+.appShell { min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 86px; }
 .appMain { flex: 1; padding: 16px; }
+.page { max-width: 520px; margin: 0 auto; }
+.sub { opacity: 0.72; margin: 6px 0 14px; line-height: 1.4; }
 
-.page { max-width: 480px; margin: 0 auto; }
-.sub { opacity: 0.7; margin-bottom: 12px; }
-
-.previewImage { width: 100%; border-radius: 16px; margin-top: 12px; }
+.previewImage { width: 100%; border-radius: 18px; margin-top: 12px; border: 1px solid rgba(255,255,255,.12); }
+.actionRow { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.primaryBtn, .secondaryBtn, .modeBtn, .gridToggle { color: white; border: 0; border-radius: 999px; padding: 11px 15px; min-height: 42px; }
+.primaryBtn { background: linear-gradient(135deg, #f59e0b, #ef4444); font-weight: 800; }
+.secondaryBtn { background: #252631; border: 1px solid rgba(255,255,255,.12); }
 
 .cardGrid { display: grid; gap: 12px; margin-top: 16px; }
-.card { background: #1a1a1f; padding: 14px; border-radius: 12px; }
+.card, .heroAdvice, .analyzingBox { background: #151824; padding: 15px; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); }
+.card strong, .heroAdvice strong { color: #fbbf24; display: block; margin-bottom: 6px; }
+.card p, .heroAdvice p { margin: 0; opacity: .78; line-height: 1.45; }
 
-.actionRow { display: flex; gap: 12px; margin-top: 16px; }
+.analysisPage { display: flex; flex-direction: column; gap: 14px; }
+.analysisHeader { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.analysisActions { display: flex; gap: 6px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.08); }
+.modeBtn { background: transparent; color: rgba(255,255,255,.65); min-height: 34px; padding: 8px 11px; font-size: .82rem; }
+.modeBtnActive { background: rgba(255,255,255,.16); color: #fff; font-weight: 800; }
 
-.primaryBtn { background: #4f46e5; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
-.secondaryBtn { background: #2a2a2f; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
+.analyzingBox { min-height: 320px; display: grid; place-items: center; text-align: center; align-content: center; gap: 10px; }
+.loaderRing { width: 52px; height: 52px; border-radius: 50%; border: 4px solid rgba(255,255,255,.14); border-top-color: #fbbf24; animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.bottomNav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; background: #111; padding: 10px 0; }
-.navButton { background: none; border: none; color: #aaa; display: flex; flex-direction: column; align-items: center; }
-.navButtonActive { color: #fff; }
+.imageStage { position: relative; overflow: hidden; border-radius: 24px; background: #020617; border: 1px solid rgba(255,255,255,.12); }
+.analysisImage { width: 100%; display: block; max-height: 58vh; object-fit: contain; background: #020617; }
+.thirdsGrid { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to right, transparent 33%, rgba(255,255,255,.45) 33%, rgba(255,255,255,.45) 34%, transparent 34%, transparent 66%, rgba(255,255,255,.45) 66%, rgba(255,255,255,.45) 67%, transparent 67%), linear-gradient(to bottom, transparent 33%, rgba(255,255,255,.45) 33%, rgba(255,255,255,.45) 34%, transparent 34%, transparent 66%, rgba(255,255,255,.45) 66%, rgba(255,255,255,.45) 67%, transparent 67%); }
+.subjectMarker { position: absolute; top: 31%; left: 38%; width: 30%; aspect-ratio: 1/1; border: 2px solid #fbbf24; border-radius: 14px; pointer-events: none; }
+.subjectMarker span { position: absolute; top: -26px; left: -2px; background: #fbbf24; color: #111; border-radius: 999px; padding: 4px 9px; font-size: .72rem; font-weight: 900; }
+.gridToggle { position: absolute; right: 10px; bottom: 10px; min-height: 36px; padding: 8px 12px; font-size: .78rem; font-weight: 800; background: rgba(0,0,0,.62); border: 1px solid rgba(255,255,255,.18); }
+
+.settingsStrip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.settingsStrip div { padding: 12px 8px; border-radius: 16px; text-align: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); }
+.settingsStrip span { display: block; opacity: .55; font-size: .68rem; text-transform: uppercase; }
+.settingsStrip strong { display: block; margin-top: 5px; font-family: monospace; font-size: .92rem; }
+.heroAdvice { border-color: rgba(251,191,36,.28); }
+
+.bottomNav { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); width: min(calc(100% - 22px), 540px); display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; padding: 8px; border-radius: 26px; background: rgba(7,10,18,.92); border: 1px solid rgba(255,255,255,.1); }
+.navButton { background: transparent; border: 0; border-radius: 18px; min-height: 54px; color: #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.navButtonActive { color: #fff; background: rgba(255,255,255,.12); }
 .navIcon { font-size: 20px; }
-.navLabel { font-size: 10px; }
+.navLabel { font-size: 10px; font-weight: 700; }
