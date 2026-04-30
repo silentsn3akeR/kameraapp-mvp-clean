@@ -6,7 +6,12 @@ export default function Camera({ onAnalyze }: { onAnalyze: (img: string) => void
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    setImage(URL.createObjectURL(file));
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
