@@ -24,6 +24,11 @@ export type GeminiVisionResult = {
   moveDirection: string;
 };
 
+type GeminiRoute = {
+  model: string;
+  mode: string;
+};
+
 function extractBase64(dataUrl: string) {
   if (!dataUrl.includes(",")) return dataUrl;
   return dataUrl.split(",")[1];
@@ -75,37 +80,23 @@ function normalizeResult(raw: any, modelUsed: string, modelMode: string): Gemini
   };
 }
 
-export async function analyzeImageWithGemini(imageDataUrl: string): Promise<GeminiVisionResult> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const route = getRouteForTask("photoAnalysis");
-
-  if (!apiKey) {
-    throw new Error("Missing VITE_GEMINI_API_KEY in .env.local");
-  }
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${route.model}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        generationConfig: {
-          temperature: 0.35,
-          responseMimeType: "application/json",
-        },
-        contents: [
-          {
-            parts: [
-              {
-                text: `You are Obscura, a premium AI photography coach.
+function buildPhotoCoachPrompt() {
+  return `You are Obscura, a premium AI photography coach.
 Analyze the uploaded photo visually and return JSON only. No markdown.
-Be specific to the actual image. Avoid generic advice.
-Keep text short, premium, direct, and useful.
+
+Your job:
+- Identify the real main subject if there is one.
+- Judge composition, subject clarity, foreground/background depth, light, contrast and distractions.
+- Give practical camera advice for the next shot, not generic motivational text.
+- Be honest: if the photo is messy, say what exactly blocks the image.
+- Keep every text short, premium, direct and useful.
 
 Coordinate rules:
-- focusX/focusY are the current main subject position in percent of the image, 0-100.
-- targetX/targetY are where the subject should ideally move for stronger composition, 0-100.
-- moveDirection is a short instruction like "move subject right" or "lower camera angle".
+- focusX/focusY = current main subject position in percent of the image, 0-100.
+- If no clear subject exists, choose the strongest visual anchor.
+- targetX/targetY = better subject position for stronger composition, 0-100.
+- Prefer rule-of-thirds points where useful: around 33/66 x and 33/66 y.
+- moveDirection = short action like "move subject right", "lower camera angle", "crop tighter", "step closer".
 
 Return this exact JSON schema:
 {
@@ -128,8 +119,37 @@ Return this exact JSON schema:
   "targetX": number,
   "targetY": number,
   "moveDirection": "short direction"
-}`,
-              },
+}`;
+}
+
+function getFallbackRoutes(primary: GeminiRoute): GeminiRoute[] {
+  const routes: GeminiRoute[] = [
+    primary,
+    { model: "gemini-2.5-flash-lite", mode: "cheap-fallback" },
+    { model: "gemini-2.5-flash", mode: "balanced-fallback" },
+    { model: "gemini-1.5-flash", mode: "legacy-fallback" },
+  ];
+
+  return routes.filter(
+    (route, index, self) => self.findIndex((candidate) => candidate.model === route.model) === index
+  );
+}
+
+async function callGemini(route: GeminiRoute, apiKey: string, imageDataUrl: string) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${route.model}:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        generationConfig: {
+          temperature: 0.25,
+          responseMimeType: "application/json",
+        },
+        contents: [
+          {
+            parts: [
+              { text: buildPhotoCoachPrompt() },
               {
                 inlineData: {
                   mimeType: extractMimeType(imageDataUrl),
@@ -146,14 +166,37 @@ Return this exact JSON schema:
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data?.error?.message || "Gemini API request failed");
+    const message = data?.error?.message || "Gemini API request failed";
+    throw new Error(`${route.model}: ${message}`);
   }
 
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!text) {
-    throw new Error("Gemini returned no analysis text");
+    throw new Error(`${route.model}: Gemini returned no analysis text`);
   }
 
   return normalizeResult(JSON.parse(cleanJson(text)), route.model, route.mode);
+}
+
+export async function analyzeImageWithGemini(imageDataUrl: string): Promise<GeminiVisionResult> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const route = getRouteForTask("photoAnalysis");
+
+  if (!apiKey) {
+    throw new Error("Missing VITE_GEMINI_API_KEY in .env.local");
+  }
+
+  const errors: string[] = [];
+
+  for (const candidate of getFallbackRoutes(route)) {
+    try {
+      return await callGemini(candidate, apiKey, imageDataUrl);
+    } catch (err: any) {
+      errors.push(err?.message || String(err));
+      console.warn("Gemini route failed:", err);
+    }
+  }
+
+  throw new Error(`All Gemini models failed: ${errors.join(" | ")}`);
 }
