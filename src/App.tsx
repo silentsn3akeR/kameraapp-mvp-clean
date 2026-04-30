@@ -6,7 +6,7 @@ import Community from "./pages/Community";
 import Profile from "./pages/Profile";
 import GameNotifications from "./components/GameNotifications";
 import { useGameEngine } from "./hooks/useGameEngine";
-import { Page } from "./core/types";
+import type { Page } from "./core/types";
 import "./styles.css";
 
 const navItems: { id: Page; label: string; icon: string }[] = [
