@@ -9,16 +9,16 @@ import "./styles.css";
 type Page = "camera" | "analyze" | "challenges" | "community" | "profile";
 
 const navItems: { id: Page; label: string; icon: string }[] = [
-  { id: "camera", label: "Shot", icon: "📷" },
-  { id: "analyze", label: "Analyse", icon: "✨" },
-  { id: "challenges", label: "Challenges", icon: "🏆" },
-  { id: "community", label: "Community", icon: "👥" },
-  { id: "profile", label: "Profil", icon: "👤" },
+  { id: "camera", label: "Shot", icon: "CAM" },
+  { id: "analyze", label: "Analyse", icon: "AI" },
+  { id: "challenges", label: "Challenges", icon: "XP" },
+  { id: "community", label: "Community", icon: "NET" },
+  { id: "profile", label: "Profil", icon: "ME" },
 ];
 
 export default function App() {
-  return <h1 style={{ color: "red" }}>ICH BIN DA</h1>;
-}
+  const [page, setPage] = useState<Page>("camera");
+  const [image, setImage] = useState<string | null>(null);
 
   const goToAnalyze = (img: string) => {
     setImage(img);
