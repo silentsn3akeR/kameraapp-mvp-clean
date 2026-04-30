@@ -17,6 +17,11 @@ export type GeminiVisionResult = {
   weaknesses: string[];
   modelUsed: string;
   modelMode: string;
+  focusX: number;
+  focusY: number;
+  targetX: number;
+  targetY: number;
+  moveDirection: string;
 };
 
 function extractBase64(dataUrl: string) {
@@ -35,6 +40,11 @@ function cleanJson(text: string) {
 
 function normalizeArray(value: any, fallback: string[]) {
   return Array.isArray(value) ? value.slice(0, 3).map(String) : fallback;
+}
+
+function normalizePercent(value: any, fallback: number) {
+  const number = Number(value ?? fallback);
+  return Math.max(6, Math.min(94, Number.isFinite(number) ? number : fallback));
 }
 
 function normalizeResult(raw: any, modelUsed: string, modelMode: string): GeminiVisionResult {
@@ -57,6 +67,11 @@ function normalizeResult(raw: any, modelUsed: string, modelMode: string): Gemini
     weaknesses: normalizeArray(raw?.weaknesses, ["Framing can be stronger", "Subject separation can improve"]),
     modelUsed,
     modelMode,
+    focusX: normalizePercent(raw?.focusX, 50),
+    focusY: normalizePercent(raw?.focusY, 45),
+    targetX: normalizePercent(raw?.targetX, 66),
+    targetY: normalizePercent(raw?.targetY, 45),
+    moveDirection: String(raw?.moveDirection || "refine framing"),
   };
 }
 
@@ -87,6 +102,11 @@ Analyze the uploaded photo visually and return JSON only. No markdown.
 Be specific to the actual image. Avoid generic advice.
 Keep text short, premium, direct, and useful.
 
+Coordinate rules:
+- focusX/focusY are the current main subject position in percent of the image, 0-100.
+- targetX/targetY are where the subject should ideally move for stronger composition, 0-100.
+- moveDirection is a short instruction like "move subject right" or "lower camera angle".
+
 Return this exact JSON schema:
 {
   "score": number from 0 to 100,
@@ -102,7 +122,12 @@ Return this exact JSON schema:
   "iso": "recommended ISO like 100",
   "shutter": "recommended shutter like 1/500",
   "strengths": ["max 3 short strengths"],
-  "weaknesses": ["max 3 short weaknesses"]
+  "weaknesses": ["max 3 short weaknesses"],
+  "focusX": number,
+  "focusY": number,
+  "targetX": number,
+  "targetY": number,
+  "moveDirection": "short direction"
 }`,
               },
               {
