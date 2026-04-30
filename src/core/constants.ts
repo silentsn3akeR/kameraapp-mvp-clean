@@ -1,0 +1,43 @@
+import { AnalysisResult } from "./types";
+
+export const ANALYSIS_TYPES: AnalysisResult[] = [
+  {
+    type: "BALANCED_SHOT",
+    score: 88,
+    title: "Strong composition",
+    composition: "Well balanced",
+    subject: "Clear",
+    depth: "Good",
+    suggestion: "Try a slightly lower angle",
+    cameraMode: "AV",
+    aperture: "f/2.8",
+    iso: "100",
+    shutter: "1/200",
+  },
+  {
+    type: "OFF_CENTER",
+    score: 72,
+    title: "Off center subject",
+    composition: "Left heavy",
+    subject: "Present",
+    depth: "Medium",
+    suggestion: "Move subject slightly right",
+    cameraMode: "AV",
+    aperture: "f/4",
+    iso: "100",
+    shutter: "1/250",
+  },
+  {
+    type: "NO_CLEAR_SUBJECT",
+    score: 61,
+    title: "No clear subject",
+    composition: "Flat",
+    subject: "Weak",
+    depth: "Low",
+    suggestion: "Focus on a main subject",
+    cameraMode: "AV",
+    aperture: "f/5.6",
+    iso: "200",
+    shutter: "1/320",
+  },
+];
