@@ -135,6 +135,36 @@ function getFallbackRoutes(primary: GeminiRoute): GeminiRoute[] {
   );
 }
 
+function offlineFallback(errors: string[]): GeminiVisionResult {
+  console.warn("Using offline fallback analysis because Gemini routes failed:", errors);
+
+  return normalizeResult(
+    {
+      score: 68,
+      title: "AI route overloaded",
+      summary: "Gemini ist gerade überlastet; die App zeigt deshalb eine lokale Notfallanalyse statt eines Fehlers.",
+      suggestion: "Retry in a moment or switch Photo Analysis to Flash Lite in Profile.",
+      composition: "Usable frame, needs clearer priority",
+      subject: "Subject needs stronger separation",
+      depth: "Foreground and background compete",
+      lighting: "Contrast is usable but uneven",
+      cameraMode: "AV",
+      aperture: "f/2.8–f/4",
+      iso: "100–400",
+      shutter: "1/250+",
+      strengths: ["App flow remains usable", "Image preview is intact", "Retry can use another route"],
+      weaknesses: ["Gemini API is temporarily overloaded", "Live analysis unavailable", "Use cheaper fallback model"],
+      focusX: 50,
+      focusY: 50,
+      targetX: 66,
+      targetY: 45,
+      moveDirection: "retry or switch model",
+    },
+    "offline-fallback",
+    "safe-mode"
+  );
+}
+
 async function callGemini(route: GeminiRoute, apiKey: string, imageDataUrl: string) {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${route.model}:generateContent?key=${apiKey}`,
@@ -198,5 +228,5 @@ export async function analyzeImageWithGemini(imageDataUrl: string): Promise<Gemi
     }
   }
 
-  throw new Error(`All Gemini models failed: ${errors.join(" | ")}`);
+  return offlineFallback(errors);
 }
