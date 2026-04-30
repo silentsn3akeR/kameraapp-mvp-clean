@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function Camera() {
+export default function Camera({
+  onAnalyze,
+}: {
+  onAnalyze: (img: string) => void;
+}) {
   const [image, setImage] = useState<string | null>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,8 +60,13 @@ export default function Camera() {
           />
 
           <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-            <button>Analysieren</button>
-            <button onClick={() => setImage(null)}>Neu wählen</button>
+            <button onClick={() => onAnalyze(image)}>
+              Analysieren
+            </button>
+
+            <button onClick={() => setImage(null)}>
+              Neu wählen
+            </button>
           </div>
         </div>
       )}
