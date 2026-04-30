@@ -27,14 +27,7 @@ export default function App() {
       case "profile":
         return <Profile />;
       default:
-        return <Camera onAnalyze={goToAnalyze} />;
-    }
-  };
-
-  return (
-    <div style={{ paddingBottom: 80 }}>
-      {renderPage()}
-
+        return
       {/* Bottom Navigation */}
       <div
         style={{
