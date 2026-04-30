@@ -1,9 +1,59 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { useState } from "react";
+import Camera from "./pages/Camera";
+import Analyze from "./pages/Analyze";
+import Challenges from "./pages/Challenges";
+import Community from "./pages/Community";
+import Profile from "./pages/Profile";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export default function App() {
+  const [page, setPage] = useState("camera");
+  const [image, setImage] = useState<string | null>(null);
+
+  const goToAnalyze = (img: string) => {
+    setImage(img);
+    setPage("analyze");
+  };
+
+  const renderPage = () => {
+    switch (page) {
+      case "camera":
+        return <Camera onAnalyze={goToAnalyze} />;
+      case "analyze":
+        return <Analyze image={image} />;
+      case "challenges":
+        return <Challenges />;
+      case "community":
+        return <Community />;
+      case "profile":
+        return <Profile />;
+      default:
+        return <Camera onAnalyze={goToAnalyze} />;
+    }
+  };
+
+  return (
+    <div style={{ paddingBottom: 80 }}>
+      {renderPage()}
+
+      {/* Bottom Navigation */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-around",
+          background: "#111",
+          color: "#fff",
+          padding: 10,
+        }}
+      >
+        <button onClick={() => setPage("camera")}>📷</button>
+        <button onClick={() => setPage("analyze")}>✨</button>
+        <button onClick={() => setPage("challenges")}>🏆</button>
+        <button onClick={() => setPage("community")}>👥</button>
+        <button onClick={() => setPage("profile")}>👤</button>
+      </div>
+    </div>
+  );
+}
