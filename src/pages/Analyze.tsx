@@ -37,7 +37,27 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
       <section className="analysisWorkbench">
         <div className="analysisVisual">
           <div className="cameraFramePremium analysisFrame">
-            <img src={image} alt="Analyzed" />
+
+            <div className="analysisImageWrapper">
+              <img src={image} alt="Analyzed" />
+
+              {result && (
+                <div className="analysisOverlay">
+                  <div className="grid" />
+
+                  <div
+                    className="focusDot"
+                    style={{ top: `${result.focusY}%`, left: `${result.focusX}%` }}
+                  />
+
+                  <div
+                    className="targetDot"
+                    style={{ top: `${result.targetY}%`, left: `${result.targetX}%` }}
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="analysisHud"><span className="recDot" /> GEMINI_VISION_STREAM</div>
             {isAnalyzing && <div className="scanLine" />}
           </div>
