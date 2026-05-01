@@ -44,6 +44,17 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
                 <div className="analysisOverlay">
                   <div className="grid" />
 
+                  <svg className="leadingLinesOverlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                      <marker id="flowArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L6,3 L0,6 Z" />
+                      </marker>
+                    </defs>
+                    <path className="leadingLine cyan" d={`M 8 78 Q ${result.focusX || 50} ${result.focusY || 55}, ${result.targetX || 66} ${result.targetY || 45}`} markerEnd="url(#flowArrow)" />
+                    <path className="leadingLine gold" d="M 18 96 Q 35 72, 51 50 T 82 14" />
+                    <path className="leadingLine soft" d="M 0 58 Q 30 54, 52 48 T 100 38" />
+                  </svg>
+
                   <svg className="guidanceLine" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <defs>
                       <marker id="guidanceArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
@@ -58,6 +69,8 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
                       markerEnd="url(#guidanceArrow)"
                     />
                   </svg>
+
+                  <div className="flowTag">LINIENFÜHRUNG</div>
 
                   <div
                     className="focusDot"
