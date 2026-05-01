@@ -32,6 +32,9 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
 
   if (!image) return null;
 
+  const cropLeft = Math.max(8, Math.min(34, (result?.targetX || 50) - 26));
+  const cropTop = Math.max(8, Math.min(28, (result?.targetY || 45) - 20));
+
   return (
     <div className="page analyzePage polishedAnalyze">
       <section className="analysisWorkbench">
@@ -42,6 +45,18 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
 
               {result && (
                 <div className="analysisOverlay">
+                  <div className="negativeSpaceOverlay">
+                    <span className="spaceZone spaceLeft">NEGATIVE SPACE</span>
+                    <span className="spaceZone spaceTop">BREATHING ROOM</span>
+                  </div>
+
+                  <div
+                    className="cropSuggestionBox"
+                    style={{ left: `${cropLeft}%`, top: `${cropTop}%` }}
+                  >
+                    <span>AI CROP</span>
+                  </div>
+
                   <div className="grid" />
 
                   <svg className="leadingLinesOverlay" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -134,6 +149,15 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
                 <div><small>Lighting</small><strong>{result.lighting}</strong></div>
                 <div><small>Mode</small><strong>{result.cameraMode}</strong></div>
                 <div><small>Settings</small><strong>{result.aperture} · ISO {result.iso} · {result.shutter}</strong></div>
+              </div>
+
+              <div className="cropPreviewCard">
+                <small>Suggested Reframe</small>
+                <div className="cropPreviewThumb">
+                  <img src={image} alt="Crop preview" />
+                  <div className="cropPreviewMask" />
+                </div>
+                <p>Use more breathing room around the subject and remove visual noise near the edges.</p>
               </div>
 
               <div className="insightColumns">
