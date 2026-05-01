@@ -79,11 +79,60 @@ button { cursor: pointer; }
   z-index: 3;
 }
 
-.guidanceLine {
+/* GRID */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+}
+
+/* LEADING LINES */
+.leadingLinesOverlay {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.leadingLine {
+  fill: none;
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+
+.leadingLine.cyan {
+  stroke: #00fff7;
+  filter: drop-shadow(0 0 6px #00fff7);
+}
+
+.leadingLine.gold {
+  stroke: #ffc857;
+  stroke-dasharray: 3 3;
+  opacity: 0.6;
+}
+
+.leadingLine.soft {
+  stroke: rgba(255,255,255,0.4);
+  stroke-dasharray: 2 4;
+}
+
+.flowTag {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-size: 10px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.guidanceLine {
+  position: absolute;
+  inset: 0;
 }
 
 .guidanceLine line {
@@ -99,7 +148,6 @@ button { cursor: pointer; }
   background: rgba(0,0,0,0.6);
   padding: 4px 6px;
   border-radius: 6px;
-  color: #fff;
   border: 1px solid rgba(255,255,255,.2);
 }
 
@@ -121,5 +169,3 @@ button { cursor: pointer; }
   background: #ff00ff;
   box-shadow: 0 0 18px #ff00ff;
 }
-
-/* rest unchanged */
