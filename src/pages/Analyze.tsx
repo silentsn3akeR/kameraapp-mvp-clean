@@ -37,13 +37,27 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
       <section className="analysisWorkbench">
         <div className="analysisVisual">
           <div className="cameraFramePremium analysisFrame">
-
             <div className="analysisImageWrapper">
               <img src={image} alt="Analyzed" />
 
               {result && (
                 <div className="analysisOverlay">
                   <div className="grid" />
+
+                  <svg className="guidanceLine" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                      <marker id="guidanceArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L8,4 L0,8 Z" />
+                      </marker>
+                    </defs>
+                    <line
+                      x1={result.focusX}
+                      y1={result.focusY}
+                      x2={result.targetX}
+                      y2={result.targetY}
+                      markerEnd="url(#guidanceArrow)"
+                    />
+                  </svg>
 
                   <div
                     className="focusDot"
@@ -54,6 +68,13 @@ export default function Analyze({ image, onRetry, onScanComplete }: any) {
                     className="targetDot"
                     style={{ top: `${result.targetY}%`, left: `${result.targetX}%` }}
                   />
+
+                  <div
+                    className="guidanceLabel"
+                    style={{ top: `${result.targetY}%`, left: `${result.targetX}%` }}
+                  >
+                    {result.moveDirection || "refine framing"}
+                  </div>
                 </div>
               )}
             </div>
