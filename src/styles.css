@@ -4,27 +4,130 @@
   background: #05060a;
 }
 
-/* NEGATIVE SPACE */
-.negativeSpaceOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.4), transparent 35%),
-              linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 40%);
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #151827 0%, #05060a 55%, #000 100%);
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.appShell {
+  min-height: 100vh;
+  padding-bottom: 104px;
+  color: #f8fafc;
+}
+.appMain {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+.page { width: 100%; }
+
+.polishedAnalyze {
+  min-height: calc(100vh - 130px);
+  display: flex;
+  align-items: center;
+}
+.analysisWorkbench {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 28px;
+  align-items: center;
+}
+.analysisVisual { min-width: 0; }
+
+.cameraFramePremium.analysisFrame {
+  position: relative;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 22px;
+  background: rgba(255,255,255,.035);
+  box-shadow: 0 24px 80px rgba(0,0,0,.45);
+  overflow: hidden;
 }
 
+/* STANDARD MODE: fixed 4:5 frame, stable overlay coordinates */
+.analysisImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: #02030a;
+  overflow: hidden;
+}
+.analysisImageWrapper img,
+.analysisFrame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.analysisOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+}
+.leadingLinesOverlay,
+.guidanceLine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.leadingLine { fill: none; stroke-width: 1.2; opacity: .8; }
+.leadingLine.cyan { stroke: #00fff7; filter: drop-shadow(0 0 6px #00fff7); }
+.leadingLine.gold { stroke: #ffc857; stroke-dasharray: 3 3; opacity: .6; }
+.leadingLine.soft { stroke: rgba(255,255,255,.4); stroke-dasharray: 2 4; }
+.guidanceLine line { stroke: #ff00ff; stroke-width: .8; stroke-dasharray: 2; }
+.flowTag,
+.guidanceLabel,
 .spaceZone {
   position: absolute;
   font-size: 9px;
-  padding: 3px 5px;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 4px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,.6);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 6px;
+  color: #fff;
 }
+.flowTag { left: 10px; bottom: 10px; }
+.guidanceLabel { transform: translate(-50%, -140%); }
 
+.focusDot,
+.targetDot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.focusDot { background: #00fff7; box-shadow: 0 0 18px #00fff7; }
+.targetDot { background: #ff00ff; box-shadow: 0 0 18px #ff00ff; }
+
+.negativeSpaceOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(0,0,0,.38), transparent 35%),
+    linear-gradient(to bottom, rgba(0,0,0,.28), transparent 40%);
+}
 .spaceLeft { left: 6px; top: 50%; transform: translateY(-50%); }
 .spaceTop { top: 6px; left: 50%; transform: translateX(-50%); }
 
-/* CROP */
 .cropSuggestionBox {
   position: absolute;
   width: 40%;
@@ -32,38 +135,176 @@
   border: 1px dashed #00fff7;
   border-radius: 6px;
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px rgba(0,255,247,.16);
 }
-
 .cropSuggestionBox span {
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 0;
   font-size: 9px;
+  color: #00fff7;
 }
 
-.cropPreviewCard {
-  margin: 16px 0;
-  padding: 12px;
+.analysisHud {
+  position: absolute;
+  left: 18px;
+  top: 16px;
+  z-index: 4;
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,.78);
+  background: rgba(0,0,0,.38);
   border: 1px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  background: rgba(0,0,0,0.3);
+  border-radius: 999px;
+  padding: 8px 10px;
+  backdrop-filter: blur(14px);
 }
+.recDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #ff365d;
+  box-shadow: 0 0 14px #ff365d;
+}
+.scanLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,247,.9), transparent);
+  animation: scanMove 1.4s linear infinite;
+  z-index: 5;
+}
+@keyframes scanMove { from { transform: translateY(0); } to { transform: translateY(760px); } }
 
+.analysisPanelPro {
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
+  box-shadow: 0 24px 80px rgba(0,0,0,.35);
+  backdrop-filter: blur(18px);
+  max-height: 78vh;
+  overflow: auto;
+}
+.panelEyebrow,
+.modelFooter {
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.52);
+}
+.scoreHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 12px 0;
+}
+.scoreNumber { font-size: clamp(48px, 7vw, 76px); line-height: .9; font-weight: 800; }
+.scoreMax { color: rgba(255,255,255,.5); }
+.panelStatus {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: #00fff7;
+  border: 1px solid rgba(0,255,247,.25);
+  border-radius: 999px;
+  padding: 7px 9px;
+}
+.panelStatus.error { color: #ff6b8a; border-color: rgba(255,107,138,.35); }
+.analysisPanelPro h2 { margin: 10px 0 8px; font-size: clamp(22px, 3vw, 34px); line-height: 1.05; }
+.analysisPanelPro p { color: rgba(255,255,255,.78); }
+.analysisHint { color: #fff !important; font-weight: 700; }
+.analysisSummary { margin-bottom: 8px; }
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+.metricGrid div,
+.insightColumns > div,
+.cropPreviewCard {
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(0,0,0,.22);
+}
+.metricGrid small,
+.cropPreviewCard small {
+  display: block;
+  color: rgba(255,255,255,.45);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  margin-bottom: 5px;
+}
+.metricGrid strong { font-size: 13px; }
+.insightColumns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.insightColumns h3 { margin: 0 0 8px; font-size: 14px; }
+.insightColumns p { margin: 6px 0; font-size: 13px; }
+.cropPreviewCard { margin: 16px 0; }
 .cropPreviewThumb {
   position: relative;
   height: 120px;
   overflow: hidden;
   border-radius: 10px;
+  margin: 8px 0;
 }
+.cropPreviewThumb img { width: 100%; height: 100%; object-fit: cover; }
+.cropPreviewMask { position: absolute; inset: 0; border: 2px solid #00fff7; }
+.panelCommands { margin-top: 16px; }
+.scoreSkeleton { font-size: 52px; font-weight: 800; opacity: .45; }
 
-.cropPreviewThumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.bottomNav {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 32px));
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 22px;
+  background: rgba(10, 12, 18, .86);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+  z-index: 20;
 }
+.navButton {
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(255,255,255,.62);
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.navButtonActive { background: rgba(255,255,255,.12); color: #fff; }
+.navIcon { font-size: 1.1rem; }
+.navLabel { font-size: .72rem; }
+.primaryBtn, .secondaryBtn, button {
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #fff;
+  color: #05060a;
+}
+.secondaryBtn, .darkButton { background: rgba(255,255,255,.08); color: #fff; }
 
-.cropPreviewMask {
-  position: absolute;
-  inset: 0;
-  border: 2px solid #00fff7;
+@media (max-width: 980px) {
+  .appMain { padding: 14px; }
+  .polishedAnalyze { align-items: flex-start; }
+  .analysisWorkbench { grid-template-columns: 1fr; gap: 16px; }
+  .cameraFramePremium.analysisFrame { width: min(100%, 520px); }
+  .analysisPanelPro { max-height: none; }
+  .metricGrid, .insightColumns { grid-template-columns: 1fr; }
 }
